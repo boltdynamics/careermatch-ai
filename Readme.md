@@ -46,7 +46,7 @@ job-seeker-assistant/
 
 ## Prerequisites
 
-- Python 3.13+
+- Python 3.11+
 - Google Cloud Project with following APIs enabled:
   - Vertex AI API
   - Gemini API
