@@ -17,11 +17,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PORT=8080
 
 # Copy requirements and install Python dependencies
-COPY requirements.txt .
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY src/ .
+COPY src/ ./
 
 # Make sure the entrypoint script is executable
 RUN chmod +x src/app.py
