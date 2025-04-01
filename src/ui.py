@@ -142,6 +142,7 @@ class StreamlitUI:
         """Scrape job details from URL."""
         try:
             with urlopen(url) as response:
+                print(f"Fetching job details from {url} with response {response}")
                 soup = BeautifulSoup(response.read(), "html.parser")
                 return soup.get_text()
         except URLError as e:

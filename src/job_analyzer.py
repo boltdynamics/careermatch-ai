@@ -59,6 +59,7 @@ class JobAnalyzer:
         """
         Parse the AI's response to extract the similarity score and analysis.
         """
+        print(f"AI Response: {response_text}")
         similarity_score = 0.0
         analysis = ""
         if "Similarity Score:" in response_text:
