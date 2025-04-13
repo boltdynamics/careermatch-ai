@@ -24,7 +24,6 @@ class Config:
         self.app = FastAPI()
         self.genai_client = Client(
             vertexai=True,
-            # project=os.environ.get("GOOGLE_CLOUD_PROJECT") or get_gcp_project(),
-            project="pras-sandbox-405410",
+            project=os.environ.get("GOOGLE_CLOUD_PROJECT") or get_gcp_project(),
             location="us-central1",
         )

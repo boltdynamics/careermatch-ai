@@ -1,6 +1,6 @@
 import io
 from urllib.error import URLError
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 
 import PyPDF2
 import streamlit as st
@@ -129,7 +129,9 @@ class StreamlitUI:
                 score, analysis = self.job_analyzer.calculate_similarity(
                     resume_text, job_details
                 )
-                self._display_job_match_results(score, analysis)
+                self._display_job_match_results(
+                    score, analysis, job_details, resume_text
+                )
 
         else:
             with st.spinner("Searching for relevant jobs..."):
@@ -141,28 +143,60 @@ class StreamlitUI:
     def _scrape_job_details(self, url: str) -> str:
         """Scrape job details from URL."""
         try:
-            with urlopen(url) as response:
-                print(f"Fetching job details from {url} with response {response}")
+            headers = {
+                "User-Agent": "*",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            }
+            req = Request(url, headers=headers)
+            with urlopen(req) as response:
                 soup = BeautifulSoup(response.read(), "html.parser")
                 return soup.get_text()
         except URLError as e:
             st.error(f"Error fetching job details: {str(e)}")
             return ""
 
-    def _display_job_match_results(self, score: float, analysis: str) -> None:
+    def _display_job_match_results(
+        self, score: float, analysis: str, job_details: str, resume_text: str
+    ) -> None:
         """Display job match results in a structured format."""
         st.subheader("Analysis Results")
 
         col1, col2 = st.columns(2)
+        generate_cv = False
         with col1:
-            st.metric("Match Score", f"{score:.1%}")
+            # Use a clean display format for the metric, avoid any string parsing issues
+            st.metric("Match Score", f"{int(score * 100)}%")
         with col2:
             if score >= 0.75:
+                generate_cv = True
                 st.success("Strong Match! 🌟")
             elif score >= 0.5:
+                generate_cv = True
                 st.warning("Moderate Match 📈")
             else:
                 st.error("Low Match 📉")
 
         st.markdown("### Detailed Analysis")
         st.markdown(analysis)
+
+        # Automatically generate cover letter if the match is strong or moderate
+        if generate_cv:
+            with st.spinner("Generating your cover letter..."):
+                cover_letter = self.job_analyzer.generate_cover_letter(
+                    resume_text, job_details, analysis
+                )
+
+            if cover_letter:
+                st.markdown(
+                    "### View and Download Cover Letter relevant to the job posting"
+                )
+                with st.expander("View Cover Letter", expanded=True):
+                    st.markdown(cover_letter)
+
+                st.download_button(
+                    label="📥 Download Cover Letter",
+                    data=cover_letter,
+                    file_name="cover_letter.txt",
+                    mime="text/plain",
+                    key="download_cover_letter",
+                )

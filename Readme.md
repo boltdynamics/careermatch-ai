@@ -4,6 +4,8 @@
 
 An intelligent career matching platform that helps job seekers analyze their resume against job postings and get personalized job search recommendations using AI.
 
+![careermatch-ai](careermatch-ai.png)
+
 ## Features
 
 - **Resume Analysis**
