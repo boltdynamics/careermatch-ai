@@ -21,7 +21,6 @@ class Config:
 
     def __init__(self):
         aiplatform.init()
-        self.app = FastAPI()
         self.genai_client = Client(
             vertexai=True,
             project=os.environ.get("GOOGLE_CLOUD_PROJECT") or get_gcp_project(),

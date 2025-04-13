@@ -99,7 +99,8 @@ export GOOGLE_CLOUD_PROJECT=$(gcloud config get-value project) && pipenv run str
 - **Additional Libraries**:
   - PyPDF2 for PDF processing
   - BeautifulSoup4 for web scraping
-  - FastAPI for API framework
+  - Streamlit for UI components
+  - Functions Framework for serverless functions
 
 ## Security & Privacy
 

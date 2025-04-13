@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-fastapi = {extras = ["standard"], version = "*"}
 google-cloud-aiplatform = "*"
 functions-framework = "*"
 streamlit = "*"
