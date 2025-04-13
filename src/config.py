@@ -1,11 +1,8 @@
 import os
 import urllib.request
 
-from fastapi import FastAPI
 from google.cloud import aiplatform
 from google.genai import Client
-
-MODEL_NAME = "gemini-2.0-pro-exp-02-05"
 
 
 def get_gcp_project():

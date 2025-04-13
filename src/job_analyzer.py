@@ -35,7 +35,7 @@ class JobAnalyzer:
         This avoids the need to parse text to extract the score.
         """
         try:
-            model = GenerativeModel("gemini-pro")
+            model = GenerativeModel("gemini-2.0-flash-lite-001")
 
             # First, get a numeric score from 0 to 1
             score_prompt = f"""
@@ -108,7 +108,7 @@ class JobAnalyzer:
             A formatted cover letter as a string
         """
         try:
-            model = GenerativeModel("gemini-pro")
+            model = GenerativeModel("gemini-2.0-flash-lite-001")
 
             # Create a detailed prompt with all available information
             prompt = f"""
