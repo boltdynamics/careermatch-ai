@@ -17,7 +17,7 @@ class JobSearcher:
 
         search_results = []
         for chunk in self.config.genai_client.models.generate_content_stream(
-            model=MODEL_NAME,
+            model="gemini-2.0-flash-001",
             contents=contents,
             config=config,
         ):
