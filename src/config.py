@@ -4,6 +4,8 @@ import urllib.request
 from google.cloud import aiplatform
 from google.genai import Client
 
+MODEL_NAME = "gemini-2.0-flash-lite-001"
+
 
 def get_gcp_project():
     """Get GCP project ID from metadata server."""

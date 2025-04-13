@@ -4,7 +4,7 @@ import re
 import streamlit as st
 from vertexai.generative_models import GenerativeModel
 
-from config import Config
+from config import Config, MODEL_NAME
 
 
 class JobAnalyzer:
@@ -12,6 +12,7 @@ class JobAnalyzer:
 
     def __init__(self, config: Config):
         self.config = config
+        self.model = GenerativeModel(MODEL_NAME)
 
     def calculate_similarity(
         self, resume_text: str, job_details: str
@@ -35,9 +36,6 @@ class JobAnalyzer:
         This avoids the need to parse text to extract the score.
         """
         try:
-            model = GenerativeModel("gemini-2.0-flash-lite-001")
-
-            # First, get a numeric score from 0 to 1
             score_prompt = f"""
             Analyze the resume and job description below. Return ONLY a numeric score between 0 and 1
             representing how well the resume matches the job requirements.
@@ -54,11 +52,11 @@ class JobAnalyzer:
             {job_details}
             """
 
-            score_response = model.generate_content(score_prompt)
+            score_response = self.model.generate_content(score_prompt)
             score_text = score_response.text.strip()
 
             # Extract numeric value using regex to handle cases where model adds text
-            score_match = re.search(r'([0-9]*\.?[0-9]+)', score_text)
+            score_match = re.search(r"([0-9]*\.?[0-9]+)", score_text)
 
             if score_match:
                 # Extract the first numeric value found
@@ -66,7 +64,9 @@ class JobAnalyzer:
             else:
                 # Fallback if no numeric value is found
                 score = 0.5
-                st.warning("Could not extract a numeric score from the model response. Using default value of 0.5.")
+                st.warning(
+                    "Could not extract a numeric score from the model response. Using default value of 0.5."
+                )
 
             # Ensure score is properly bounded
             score = max(0.0, min(1.0, score))
@@ -87,7 +87,7 @@ class JobAnalyzer:
             {job_details}
             """
 
-            analysis_response = model.generate_content(analysis_prompt)
+            analysis_response = self.model.generate_content(analysis_prompt)
             analysis_text = analysis_response.text
 
             return {"score": score, "analysis": analysis_text}
@@ -95,7 +95,9 @@ class JobAnalyzer:
             st.error(f"Error in structured analysis: {str(e)}")
             return {"score": 0.5, "analysis": f"Error performing analysis: {str(e)}"}
 
-    def generate_cover_letter(self, resume_text: str, job_details: str, analysis: str = None) -> str:
+    def generate_cover_letter(
+        self, resume_text: str, job_details: str, analysis: str = None
+    ) -> str:
         """
         Generate a professional cover letter based on resume and job posting details.
 
@@ -108,9 +110,6 @@ class JobAnalyzer:
             A formatted cover letter as a string
         """
         try:
-            model = GenerativeModel("gemini-2.0-flash-lite-001")
-
-            # Create a detailed prompt with all available information
             prompt = f"""
             Create a professional cover letter based on the following resume and job description.
 
@@ -120,8 +119,6 @@ class JobAnalyzer:
             Job Description:
             {job_details}
             """
-
-            # If analysis is provided, include it for better tailoring
             if analysis:
                 prompt += f"""
                 Analysis of Match:
@@ -140,7 +137,7 @@ class JobAnalyzer:
             Keep the tone professional but engaging. Format the letter properly with paragraphs.
             """
 
-            response = model.generate_content(prompt)
+            response = self.model.generate_content(prompt)
             return response.text
 
         except Exception as e:
